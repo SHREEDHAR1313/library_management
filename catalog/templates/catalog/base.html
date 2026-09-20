@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Library Management System{% endblock %}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+</style>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen">
+
+<header class="bg-gradient-to-r from-blue-700 to-blue-900 text-white px-6 py-5">
+  <h1 class="text-xl font-semibold">📚 Library Management System</h1>
+  <p class="text-blue-100 text-sm mt-1">Track books, members, and issue/return activity</p>
+</header>
+
+<nav class="bg-white border-b border-gray-200 px-6 py-3 flex gap-2 flex-wrap">
+  <a href="{% url 'dashboard' %}" class="px-4 py-2 rounded-md text-sm font-medium {% if request.resolver_match.url_name == 'dashboard' %}bg-blue-600 text-white{% else %}text-gray-600 hover:bg-blue-50{% endif %}">Dashboard</a>
+  <a href="{% url 'book_list' %}" class="px-4 py-2 rounded-md text-sm font-medium {% if request.resolver_match.url_name == 'book_list' %}bg-blue-600 text-white{% else %}text-gray-600 hover:bg-blue-50{% endif %}">Books</a>
+  <a href="{% url 'member_list' %}" class="px-4 py-2 rounded-md text-sm font-medium {% if request.resolver_match.url_name == 'member_list' %}bg-blue-600 text-white{% else %}text-gray-600 hover:bg-blue-50{% endif %}">Members</a>
+  <a href="{% url 'issue_view' %}" class="px-4 py-2 rounded-md text-sm font-medium {% if request.resolver_match.url_name == 'issue_view' %}bg-blue-600 text-white{% else %}text-gray-600 hover:bg-blue-50{% endif %}">Issue / Return</a>
+  <a href="{% url 'transaction_list' %}" class="px-4 py-2 rounded-md text-sm font-medium {% if request.resolver_match.url_name == 'transaction_list' %}bg-blue-600 text-white{% else %}text-gray-600 hover:bg-blue-50{% endif %}">Transactions</a>
+</nav>
+
+<main class="max-w-6xl mx-auto px-6 py-6">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="mb-4 px-4 py-3 rounded-md text-sm font-medium
+        {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>

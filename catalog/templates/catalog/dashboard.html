@@ -1,0 +1,36 @@
+{% extends 'catalog/base.html' %}
+{% block title %}Dashboard · Library Management System{% endblock %}
+{% block content %}
+
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
+  <div class="bg-white rounded-xl border border-gray-200 p-5">
+    <div class="text-2xl font-bold text-blue-600">{{ total_books }}</div>
+    <div class="text-sm text-gray-500 mt-1">Total Titles</div>
+  </div>
+  <div class="bg-white rounded-xl border border-gray-200 p-5">
+    <div class="text-2xl font-bold text-blue-600">{{ available_copies }} / {{ total_copies }}</div>
+    <div class="text-sm text-gray-500 mt-1">Copies Available</div>
+  </div>
+  <div class="bg-white rounded-xl border border-gray-200 p-5">
+    <div class="text-2xl font-bold text-blue-600">{{ total_members }}</div>
+    <div class="text-sm text-gray-500 mt-1">Members</div>
+  </div>
+  <div class="bg-white rounded-xl border border-gray-200 p-5">
+    <div class="text-2xl font-bold text-blue-600">{{ active_issues }}</div>
+    <div class="text-sm text-gray-500 mt-1">Books Issued</div>
+  </div>
+  <div class="bg-white rounded-xl border border-gray-200 p-5">
+    <div class="text-2xl font-bold text-red-600">{{ overdue_count }}</div>
+    <div class="text-sm text-gray-500 mt-1">Overdue</div>
+  </div>
+</div>
+
+<div class="bg-white rounded-xl border border-gray-200 p-6">
+  <h2 class="font-semibold text-lg mb-2">Quick Start</h2>
+  <p class="text-sm text-gray-500">
+    Use the tabs above to add books and members, issue books to members, and track returns.
+    All data is managed here or via the <a href="/admin/" class="text-blue-600 underline">Django admin panel</a>.
+  </p>
+</div>
+
+{% endblock %}

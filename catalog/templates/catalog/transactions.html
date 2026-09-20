@@ -1,0 +1,42 @@
+{% extends 'catalog/base.html' %}
+{% block title %}Transactions · Library Management System{% endblock %}
+{% block content %}
+
+<div class="bg-white rounded-xl border border-gray-200 p-6">
+  <h2 class="font-semibold text-lg mb-4">All Transactions</h2>
+  {% if transactions %}
+  <div class="overflow-x-auto">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="text-left text-gray-500 uppercase text-xs border-b border-gray-200">
+        <th class="py-2">Book</th><th>Member</th><th>Issued</th><th>Due</th><th>Returned</th><th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for txn in transactions %}
+      <tr class="border-b border-gray-100 hover:bg-gray-50">
+        <td class="py-2">{{ txn.book.title }}</td>
+        <td>{{ txn.member.name }}</td>
+        <td>{{ txn.issue_date|date:"d M Y" }}</td>
+        <td>{{ txn.due_date|date:"d M Y" }}</td>
+        <td>{{ txn.return_date|date:"d M Y"|default:"—" }}</td>
+        <td>
+          {% if txn.status == 'returned' %}
+            <span class="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-1 rounded-full">Returned</span>
+          {% elif txn.is_overdue %}
+            <span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-1 rounded-full">Overdue</span>
+          {% else %}
+            <span class="bg-amber-100 text-amber-700 text-xs font-semibold px-2 py-1 rounded-full">Issued</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <p class="text-center text-gray-400 py-8">No transactions yet.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

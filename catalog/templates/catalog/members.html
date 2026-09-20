@@ -1,0 +1,60 @@
+{% extends 'catalog/base.html' %}
+{% block title %}Members · Library Management System{% endblock %}
+{% block content %}
+
+<div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+  <h2 class="font-semibold text-lg mb-4">Add New Member</h2>
+  <form method="post" action="{% url 'member_add' %}" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    {% csrf_token %}
+    <div>
+      <label class="text-xs text-gray-500 block mb-1">Name *</label>
+      <input name="name" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+    </div>
+    <div>
+      <label class="text-xs text-gray-500 block mb-1">Email *</label>
+      <input name="email" type="email" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+    </div>
+    <div>
+      <label class="text-xs text-gray-500 block mb-1">Phone</label>
+      <input name="phone" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+    </div>
+    <div class="sm:col-span-3">
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">Add Member</button>
+    </div>
+  </form>
+</div>
+
+<div class="bg-white rounded-xl border border-gray-200 p-6">
+  <h2 class="font-semibold text-lg mb-4">All Members</h2>
+  {% if members %}
+  <div class="overflow-x-auto">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="text-left text-gray-500 uppercase text-xs border-b border-gray-200">
+        <th class="py-2">Name</th><th>Email</th><th>Phone</th><th>Joined</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for member in members %}
+      <tr class="border-b border-gray-100 hover:bg-gray-50">
+        <td class="py-2">{{ member.name }}</td>
+        <td>{{ member.email }}</td>
+        <td>{{ member.phone|default:"—" }}</td>
+        <td>{{ member.joined_at|date:"d M Y" }}</td>
+        <td>
+          <form method="post" action="{% url 'member_delete' member.id %}" onsubmit="return confirm('Delete this member?');">
+            {% csrf_token %}
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-md">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <p class="text-center text-gray-400 py-8">No members yet.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'catalog/base.html' %}
+{% block title %}Books · Library Management System{% endblock %}
+{% block content %}
+
+<div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+  <h2 class="font-semibold text-lg mb-4">Add New Book</h2>
+  <form method="post" action="{% url 'book_add' %}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+    {% csrf_token %}
+    <div>
+      <label class="text-xs text-gray-500 block mb-1">Title *</label>
+      <input name="title" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+    </div>
+    <div>
+      <label class="text-xs text-gray-500 block mb-1">Author *</label>
+      <input name="author" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+    </div>
+    <div>
+      <label class="text-xs text-gray-500 block mb-1">ISBN</label>
+      <input name="isbn" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+    </div>
+    <div>
+      <label class="text-xs text-gray-500 block mb-1">Category</label>
+      <input name="category" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+    </div>
+    <div>
+      <label class="text-xs text-gray-500 block mb-1">Copies</label>
+      <input name="total_copies" type="number" min="1" value="1" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+    </div>
+    <div class="lg:col-span-5">
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">Add Book</button>
+    </div>
+  </form>
+</div>
+
+<div class="bg-white rounded-xl border border-gray-200 p-6">
+  <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+    <h2 class="font-semibold text-lg">All Books</h2>
+    <form method="get" class="flex gap-2">
+      <input type="text" name="q" value="{{ query }}" placeholder="Search title, author, category..."
+        class="border border-gray-300 rounded-md px-3 py-2 text-sm w-64">
+      <button type="submit" class="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-md text-sm">Search</button>
+    </form>
+  </div>
+
+  {% if books %}
+  <div class="overflow-x-auto">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="text-left text-gray-500 uppercase text-xs border-b border-gray-200">
+        <th class="py-2">Title</th><th>Author</th><th>Category</th><th>Copies</th><th>Status</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in books %}
+      <tr class="border-b border-gray-100 hover:bg-gray-50">
+        <td class="py-2">{{ book.title }}</td>
+        <td>{{ book.author }}</td>
+        <td>{{ book.category|default:"—" }}</td>
+        <td>{{ book.available_copies }} / {{ book.total_copies }}</td>
+        <td>
+          {% if book.is_available %}
+            <span class="bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-full">Available</span>
+          {% else %}
+            <span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-1 rounded-full">All Issued</span>
+          {% endif %}
+        </td>
+        <td>
+          <form method="post" action="{% url 'book_delete' book.id %}" onsubmit="return confirm('Delete this book?');">
+            {% csrf_token %}
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-md">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <p class="text-center text-gray-400 py-8">No books found.</p>
+  {% endif %}
+</div>
+
+{% endblock %}

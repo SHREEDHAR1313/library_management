@@ -1,0 +1,84 @@
+{% extends 'catalog/base.html' %}
+{% block title %}Issue / Return · Library Management System{% endblock %}
+{% block content %}
+
+<div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+  <h2 class="font-semibold text-lg mb-4">Issue a Book</h2>
+
+  {% if not available_books %}
+    <p class="text-gray-400 text-sm">No available copies to issue. Add books first.</p>
+  {% elif not members %}
+    <p class="text-gray-400 text-sm">No members yet. Add a member first.</p>
+  {% else %}
+  <form method="post" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    {% csrf_token %}
+    <div>
+      <label class="text-xs text-gray-500 block mb-1">Book *</label>
+      <select name="book_id" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+        <option value="">Select a book</option>
+        {% for book in available_books %}
+          <option value="{{ book.id }}">{{ book.title }} ({{ book.available_copies }} left)</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="text-xs text-gray-500 block mb-1">Member *</label>
+      <select name="member_id" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+        <option value="">Select a member</option>
+        {% for member in members %}
+          <option value="{{ member.id }}">{{ member.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label class="text-xs text-gray-500 block mb-1">Loan Days</label>
+      <input name="days_allowed" type="number" min="1" value="14" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+    </div>
+    <div class="sm:col-span-3">
+      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium">Issue Book</button>
+    </div>
+  </form>
+  {% endif %}
+</div>
+
+<div class="bg-white rounded-xl border border-gray-200 p-6">
+  <h2 class="font-semibold text-lg mb-4">Currently Issued</h2>
+  {% if active_transactions %}
+  <div class="overflow-x-auto">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="text-left text-gray-500 uppercase text-xs border-b border-gray-200">
+        <th class="py-2">Book</th><th>Member</th><th>Issued</th><th>Due</th><th>Status</th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for txn in active_transactions %}
+      <tr class="border-b border-gray-100 hover:bg-gray-50">
+        <td class="py-2">{{ txn.book.title }}</td>
+        <td>{{ txn.member.name }}</td>
+        <td>{{ txn.issue_date|date:"d M Y" }}</td>
+        <td>{{ txn.due_date|date:"d M Y" }}</td>
+        <td>
+          {% if txn.is_overdue %}
+            <span class="bg-red-100 text-red-700 text-xs font-semibold px-2 py-1 rounded-full">Overdue</span>
+          {% else %}
+            <span class="bg-amber-100 text-amber-700 text-xs font-semibold px-2 py-1 rounded-full">Issued</span>
+          {% endif %}
+        </td>
+        <td>
+          <form method="post" action="{% url 'return_book' txn.id %}">
+            {% csrf_token %}
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1.5 rounded-md">Return</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <p class="text-center text-gray-400 py-8">No books currently issued.</p>
+  {% endif %}
+</div>
+
+{% endblock %}
